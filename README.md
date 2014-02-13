@@ -1,4 +1,4 @@
 securesystems_fuzzer
 ====================
 
-fuzzer
+Fuzzer Project for Secure Software Systems
