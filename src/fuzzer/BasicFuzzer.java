@@ -22,6 +22,12 @@ public class BasicFuzzer {
 		webClient.closeAllWindows();
 	}
 
+	//authentication code. user + password are hardcoded.
+	public void authenticate(WebClient wc){
+		DefaultCredentialsProvider credentialsProvider = (DefaultCredentialsProvider) wc.getCredentialsProvider();
+		credentialsProvider.addCredentials("admin", "password");
+	}
+	
 	/**
 	 * This code is for showing how you can get all the links on a given page, and visit a given URL
 	 * @param webClient
