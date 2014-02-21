@@ -7,7 +7,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import fuzzer.Authentication;
 import fuzzer.PageDiscover;
 
-public class FuzzerMain {
+public class Fuzz {
 
 	private String vectorsOption = "--vectors";
 	private String sensitiveOption = "--sensitive";
@@ -15,7 +15,10 @@ public class FuzzerMain {
 	private String slowOption = "--slow";
 	private String commonWordOption = "--common-words";
 	private String customAuthOption = "--custom-auth";
+	private String customAuthSite = "";
 	
+	private boolean customAuth = false; 
+
 	/**
 	 * Fuzzer main stuff 
 	 * @param args
@@ -25,7 +28,6 @@ public class FuzzerMain {
 		String command = ""; 
 		String url = "";
 		List<String> options = new ArrayList<String>();
-		boolean hardCodedAuth = false; 
 		
 		try { 
 			
@@ -48,15 +50,38 @@ public class FuzzerMain {
 				}
 			}
 			
+			for (String option : options) { 
+				parseOptions(option);
+			}
+			
 			//Authentication 
 			Authentication auth = new Authentication();
-			
-			
+			if (customAuth) { 
+				
+				if (customAuthSite.equals("dvwa")) { 
+					auth.loginDvwa(client);
+				}
+				if (customAuthSite.equals("bodgeit")) { 
+					auth.loginBodgeIt(client, "", "");
+				}
+			}
+					
 			//Page Crawler
 			PageDiscover pageDiscover = new PageDiscover();
-			pageDiscover.discoverPages(client, url);
-			//Input Crawler
+			ArrayList<String> links = pageDiscover.discoverPages(client, url);
 			
+			//Input Crawler
+			InputDiscover inputDiscover = new InputDiscover();
+
+			//Get All Inputs 
+			for (String link : links) { 
+				inputDiscover.discoverInputs(client, link);
+			}
+			
+			//Get Cookies 
+			inputDiscover.discoverCookies(client, url);
+			
+			client.closeAllWindows();
 		} catch (Exception excep) { 
 			
 			System.out.println("Exception found: " + excep);
@@ -93,9 +118,44 @@ public class FuzzerMain {
 		}
 	}
 	
+	private void parseOptions(String option) { 
+		
+		String[] split = option.split("=");
+		String optionCommand = split[0];
+		if (optionCommand.contains(vectorsOption)) {
+
+		}
+		else if (optionCommand.contains(sensitiveOption)) { 
+			
+		}
+		else if (optionCommand.contains(randomOption)) { 
+
+		}
+		else if (optionCommand.contains(slowOption)) { 
+			
+		} 
+		else if (optionCommand.contains(commonWordOption)) { 
+			
+		}
+		else if (optionCommand.contains(customAuthOption)) { 
+			
+			customAuth = true;
+			String site = split[1];
+			if (site.contains("dvwa")) { 
+				customAuthSite = "dvwa";
+			} 
+			if (site.contains("bodgeit")) { 
+				customAuthSite = "bodgeit";
+			}
+		}
+		else { 
+			//Don't do anything. 
+		}
+	}
+	
 	public static void main(String[] args) { 
 		
-		FuzzerMain fuzzer = new FuzzerMain();
+		Fuzz fuzzer = new Fuzz();
 		fuzzer.runFuzzer(args);
 	}
 }

@@ -17,9 +17,11 @@ public class PageDiscover {
 	 * @param client - web client to use 
 	 * @param url - base url to start crawling from. 
 	 */
-	public void discoverPages(WebClient client, String url) { 
+	public ArrayList<String> discoverPages(WebClient client, String url) { 
 		
 		//Get base url
+		ArrayList<String> completedUrls = new ArrayList<String>();
+
 		String baseUrl = baseUrl(url);
 		System.out.println("Getting all links on site: " + baseUrl + "...... Please Wait");
 
@@ -45,7 +47,7 @@ public class PageDiscover {
 					String crawledLink = crawlPage.getFullyQualifiedUrl(link.getHrefAttribute()).toString();
 					//Check if the link is within the same website (same baseurl). 
 					//If so then save the link otherwise don't add it to list of URL to crawl. 
-					if (crawledLink.contains(baseUrl) && crawledLink.contains("http://")) { 
+					if (crawledLink.contains("http://" + baseUrl)) { 
 						//Add the link to the url list
 						urls.add(crawledLink.trim());
 					}
@@ -63,8 +65,14 @@ public class PageDiscover {
 				//Check if link has already been crawled. 
 				if (!crawlCompletedLinks.contains(crawlUrl)) { 
 					
-					Page crawlPage2 = client.getPage(crawlUrl);
-					
+					System.out.println(crawlUrl);
+					Page crawlPage2 = null;
+					try { 
+						crawlPage2 = client.getPage(crawlUrl);
+					} catch (Exception excep) { 
+						continue;
+					}
+						
 					//Check if page is of xml if so don't do anything. 
 					String contentType = crawlPage2.getWebResponse().getContentType();
 					
@@ -94,6 +102,7 @@ public class PageDiscover {
 			
 			//Print all crawled links
 			System.out.println("Crawling complete.");
+			System.out.println("--------------------------------");
 			System.out.println("Total Crawled Links: " + crawlCompletedLinks.size());
 			Object[] crawledLinks = crawlCompletedLinks.toArray();
 			
@@ -101,10 +110,18 @@ public class PageDiscover {
 				System.out.println("Link: " + crawledLink.toString());
 			}
 			
+			for (String completedLink : crawlCompletedLinks) { 
+				completedUrls.add(completedLink);
+			}
+			
+			return completedUrls;
+			
 		} catch (Exception excep) { 
 			System.out.println("Exception found: ");
 			excep.printStackTrace();
 		}
+		
+		return completedUrls;
 	}
 	
 	/** 

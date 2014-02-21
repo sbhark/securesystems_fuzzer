@@ -11,7 +11,7 @@ public class Authentication {
 	private final String dvwaUser = "admin"; 
 	private final String dvwaPass = "password"; 
 	
-	private final String dvwaLogin = "http://localhost/dvwa/login.php"; 
+	private final String dvwaLogin = "http://localhost:8888/dvwa/login.php"; 
 	private final String bodgeItLogin = "http://localhost:8080/bodgeit/login.jsp"; 
 	
 	/** 
@@ -57,11 +57,11 @@ public class Authentication {
 			for(HtmlForm form: forms) { 
 				
 				form.getInputByName(usernameField).setValueAttribute(username);
-				form.getInputByName(passwordField).setValueAttribute(username);
-				HtmlSubmitInput loginButton = form.getFirstByXPath("//input[@id='submit']");
+				form.getInputByName(passwordField).setValueAttribute(password);
+				HtmlSubmitInput loginButton = form.getInputByName("Login");
 				String loginSuccessPage = loginButton.click().getWebResponse().getContentAsString();
 				
-				if (loginSuccessPage.contains("Successfully")) { 
+				if (loginSuccessPage.contains("You have logged in")) { 
 					System.out.println("");
 					System.out.println("Login Success at: " + url);
 				} 

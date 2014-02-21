@@ -10,14 +10,14 @@ public class Test {
 	 */
 	public static void main(String[] args) { 
 
-		String url = "http://anjitrana.com/";
+		String url = "http://localhost:8888/dvwa/";
 		
-		WebClient webClient = new WebClient();
-		webClient.setJavaScriptEnabled(false);
+		WebClient client = new WebClient();
+		client.setJavaScriptEnabled(false);
 		
-		PageDiscover pd = new PageDiscover();
-		pd.discoverPages(webClient, url);
+		Authentication auth = new Authentication();
+		auth.loginDvwa(client);
 		
-		webClient.closeAllWindows();
+		client.closeAllWindows();
 	}
 }
