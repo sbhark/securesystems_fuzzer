@@ -18,6 +18,7 @@ public class VectorTest {
 		
 		List<HtmlInput> inputs; 
 		HtmlSubmitInput inputSubmit; 
+		String response; 
 		
 		try { 
 			
@@ -30,7 +31,22 @@ public class VectorTest {
 				for(String vector : attackVectors) { 
 
 					input.setValueAttribute(vector);
-
+					response = inputSubmit.<HtmlPage>click().getWebResponse().getContentAsString();
+					
+					if (response.toLowerCase().contains("error")) { 
+						System.out.println("----------------------------------------------------------------");
+						System.out.println("WARNING: Found error on vector input.");
+						System.out.println("Input was:" + vector);
+						System.out.println("----------------------------------------------------------------");
+					}
+					
+					//Check for sanitization 
+					if (response.contains(vector)) { 
+						System.out.println("----------------------------------------------------------------");
+						System.out.println("WARNING: Found lack of sanitization");
+						System.out.println("Input was:" + vector);
+						System.out.println("----------------------------------------------------------------");
+					}
 				}
 			}
 			
@@ -51,6 +67,7 @@ public class VectorTest {
 		
 		HtmlPage page = client.getPage(url);
 		String pageContents = page.getWebResponse().getContentAsString();
+		page.getWebResponse().getStatusCode();
 		
 		for (String sensitive : sensitiveData) { 
 			if (pageContents.contains(sensitive)) { 
@@ -62,9 +79,5 @@ public class VectorTest {
 		}
 		
 		return page;
-	}
-	
-	private void checkSanitize(HtmlInput input, HtmlSubmitInput submitButton) { 
-
 	}
 }

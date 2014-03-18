@@ -33,7 +33,7 @@ public class InputDiscover {
 			
 			urlToInput.put(url, inputs);
 			
-			System.out.println("--------------------------------");
+			System.out.println("----------------------------------------------------------------");
 			System.out.println("Inputs Discovered:");
 			for (Map.Entry<String, List<HtmlElement>> input : urlToInput.entrySet()) { 
 				System.out.println("URL: " + input.getKey());
