@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
@@ -19,6 +20,7 @@ public class VectorTest {
 		List<HtmlInput> inputs; 
 		HtmlSubmitInput inputSubmit; 
 		String response; 
+		int timeLimit = client.getTimeout();
 		
 		try { 
 			
@@ -31,7 +33,9 @@ public class VectorTest {
 				for(String vector : attackVectors) { 
 
 					input.setValueAttribute(vector);
-					response = inputSubmit.<HtmlPage>click().getWebResponse().getContentAsString();
+					
+					WebResponse webResponse = inputSubmit.<HtmlPage>click().getWebResponse();
+					response = webResponse.getContentAsString();
 					
 					if (response.toLowerCase().contains("error")) { 
 						System.out.println("----------------------------------------------------------------");
@@ -47,13 +51,19 @@ public class VectorTest {
 						System.out.println("Input was:" + vector);
 						System.out.println("----------------------------------------------------------------");
 					}
+					
+					//Check for a timeout
+					if ((timeLimit > 0) && (webResponse.getLoadTime() > timeLimit)){
+						System.out.println("----------------------------------------------------------------");
+						System.out.println("WARNING: Response time greater than " + timeLimit + ".");
+						System.out.println("----------------------------------------------------------------");
+					}
 				}
 			}
 			
 		} catch(Exception excep) { 
 			
 		}
-		//Add timeout catch exception here Adam. 
 	}
 	
 	/** 

@@ -27,6 +27,7 @@ public class Fuzz {
 	private ArrayList<String> attackVectors = new ArrayList<String>();
 	private ArrayList<String> sensitiveList = new ArrayList<String>();
 	private boolean random = false; 
+	private long timeLimit = 0;
 	
 	/**
 	 * Fuzzer main stuff 
