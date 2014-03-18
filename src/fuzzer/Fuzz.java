@@ -1,4 +1,8 @@
 package fuzzer;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +22,12 @@ public class Fuzz {
 	private String customAuthSite = "";
 	
 	private boolean customAuth = false; 
-
+	private WebClient client = new WebClient();
+	private String slowValue = "";
+	private ArrayList<String> attackVectors = new ArrayList<String>();
+	private ArrayList<String> sensitiveList = new ArrayList<String>();
+	private boolean random = false; 
+	
 	/**
 	 * Fuzzer main stuff 
 	 * @param args
@@ -31,7 +40,6 @@ public class Fuzz {
 		
 		try { 
 			
-			WebClient client = new WebClient();
 			client.setJavaScriptEnabled(false);
 			
 			for (int i = 0; i < args.length; i++) { 
@@ -81,6 +89,13 @@ public class Fuzz {
 			//Get Cookies 
 			inputDiscover.discoverCookies(client, url);
 			
+			//Vector Test 
+			VectorTest vectorAttack = new VectorTest(); 
+			
+			for (String link : links) { 
+				vectorAttack.attack(client, link, attackVectors, sensitiveList);
+			}
+			
 			client.closeAllWindows();
 		} catch (Exception excep) { 
 			
@@ -123,16 +138,61 @@ public class Fuzz {
 		String[] split = option.split("=");
 		String optionCommand = split[0];
 		if (optionCommand.contains(vectorsOption)) {
-
+			
+			String file = split[1];
+			String line = ""; 
+			
+			try {
+				
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				
+				while((line = br.readLine()) != null) { 
+					
+					attackVectors.add(line);
+				}
+				br.close();
+				
+			} catch (FileNotFoundException e) {
+				
+				System.out.println("ERROR: Could not find vectors file.");
+			} catch (IOException e) {
+				
+				System.out.println("ERROR: IOException while processing vectors file.");
+			}
+			
 		}
 		else if (optionCommand.contains(sensitiveOption)) { 
 			
+			try {
+				
+				String file = split[1];
+				String line = ""; 
+				
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				
+				while((line = br.readLine()) != null) { 
+					
+					sensitiveList.add(line);
+				}
+				br.close();
+				
+			} catch (FileNotFoundException e) {
+				
+				System.out.println("ERROR: Could not find sensitive info file.");
+			} catch (IOException e) {
+				
+				System.out.println("ERROR: IOException while processing sensitive info file.");
+			}
 		}
 		else if (optionCommand.contains(randomOption)) { 
 
+			String randomOption = split[1];
+			random = Boolean.parseBoolean(randomOption); 
 		}
 		else if (optionCommand.contains(slowOption)) { 
 			
+			slowValue = split[1];
+			client.setTimeout(Integer.parseInt(slowValue));
 		} 
 		else if (optionCommand.contains(commonWordOption)) { 
 			
